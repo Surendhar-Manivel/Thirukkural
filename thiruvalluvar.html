@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thiruvalluvar Biography — திருக்குறள்</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .bio-content { max-width: 720px; margin: 0 auto; padding: 48px 0; }
+    .bio-content h2 {
+      font-family: var(--font-tamil);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--color-stone);
+      margin: 36px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .bio-content h2 .en {
+      font-family: var(--font-english);
+      font-size: 16px;
+      font-style: italic;
+      color: var(--color-gold);
+      display: block;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+    .bio-content p {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--color-text-body);
+      margin-bottom: 16px;
+    }
+    .bio-content p.ta {
+      font-family: var(--font-tamil);
+      font-size: 15px;
+      color: var(--color-stone);
+      background: var(--color-cream);
+      border-left: 3px solid var(--color-gold);
+      padding: 12px 16px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .bio-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .bio-stat {
+      background: var(--color-cream);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+    }
+    .bio-stat-val {
+      font-family: var(--font-english);
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--color-gold);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .bio-stat-lbl { font-size: 12px; color: var(--color-text-faint); }
+    .featured-kural {
+      background: var(--color-stone);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin: 28px 0;
+    }
+    .featured-kural-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .featured-kural-ta {
+      font-family: var(--font-tamil);
+      font-size: 20px;
+      font-weight: 700;
+      color: #FAF0DC;
+      line-height: 1.85;
+      margin-bottom: 10px;
+    }
+    .featured-kural-en {
+      font-family: var(--font-english);
+      font-size: 16px;
+      font-style: italic;
+      color: var(--color-gold);
+      line-height: 1.6;
+    }
+    .timeline { position: relative; padding-left: 28px; margin: 24px 0; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--color-border);
+    }
+    .timeline-item { position: relative; margin-bottom: 20px; }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -24px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-gold);
+      border: 2px solid var(--color-ivory);
+    }
+    .timeline-period { font-size: 11px; font-weight: 600; color: var(--color-gold); margin-bottom: 3px; }
+    .timeline-event { font-size: 14px; color: var(--color-text-body); line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-logo">
+        <div class="navbar-logo-circle">த</div>
+        <div>
+          <div class="navbar-logo-text">திருக்குறள்</div>
+          <div class="navbar-logo-sub">Thirukkural</div>
+        </div>
+      </a>
+      <ul class="navbar-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="browse.html">Browse</a></li>
+        <li><a href="search.html">Search</a></li>
+        <li><a href="thiruvalluvar.html" class="active">Thiruvalluvar</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- BIO HERO -->
+  <div class="bio-hero">
+    <div class="container" style="text-align:center">
+      <div class="bio-avatar" style="margin:0 auto 16px">வ</div>
+      <div class="bio-name-ta">திருவள்ளுவர்</div>
+      <div class="bio-name-en">Thiruvalluvar — The Sacred Poet</div>
+      <p style="font-size:13px;color:rgba(253,246,236,0.5);max-width:480px;margin:12px auto 0;line-height:1.7">
+        The author of Thirukkural — one of the greatest works in world literature.
+        His 1330 couplets have been translated into over 80 languages.
+      </p>
+    </div>
+  </div>
+
+  <div class="temple-strip"></div>
+
+  <!-- BIO CONTENT -->
+  <div class="container">
+    <div class="bio-content">
+
+      <!-- Stats -->
+      <div class="bio-stat-grid">
+        <div class="bio-stat">
+          <div class="bio-stat-val">1330</div>
+          <div class="bio-stat-lbl">Kurals composed</div>
+        </div>
+        <div class="bio-stat">
+          <div class="bio-stat-val">133</div>
+          <div class="bio-stat-lbl">Chapters (Adhigarams)</div>
+        </div>
+        <div class="bio-stat">
+          <div class="bio-stat-val">3</div>
+          <div class="bio-stat-lbl">Books (Pals)</div>
+        </div>
+        <div class="bio-stat">
+          <div class="bio-stat-val">80+</div>
+          <div class="bio-stat-lbl">Languages translated</div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <h2>வாழ்க்கை வரலாறு <span class="en">Life & History</span></h2>
+
+      <p>
+        Thiruvalluvar is the ancient Tamil poet and philosopher who authored the Thirukkural,
+        one of the greatest works of Tamil literature and world philosophy. His exact dates
+        of birth and death remain unknown — historians place him anywhere between the 4th century
+        BCE and the 5th century CE, with many scholars settling on approximately 300 BCE.
+      </p>
+
+      <p class="ta">
+        திருவள்ளுவர் பற்றிய சரியான வரலாற்று தகவல்கள் இல்லை. அவர் சென்னையின்
+        மயிலாப்பூரில் வாழ்ந்ததாக நம்பப்படுகிறது. அவரது மனைவி வாசுகி, பதினோரு
+        வயதிலேயே அவரிடம் கற்று ஞானம் பெற்றதாக ஐதீகம்.
+      </p>
+
+      <p>
+        He is believed to have lived in <strong>Mylapore</strong> (present-day Chennai, Tamil Nadu).
+        His wife was <strong>Vasuki</strong>, described in legend as an extraordinarily virtuous woman
+        who never wasted a drop of water — when Thiruvalluvar placed a needle in a bowl of water and asked
+        her to fill it, she poured water so precisely that not a drop spilled.
+      </p>
+
+      <!-- First kural -->
+      <div class="featured-kural">
+        <div class="featured-kural-label">குறள் 1 — His very first verse</div>
+        <div class="featured-kural-ta">
+          அகர முதல எழுத்தெல்லாம் ஆதி<br>
+          பகவன் முதற்றே உலகு.
+        </div>
+        <div class="featured-kural-en">
+          "As A is the first of all letters, so the eternal God is first in the world."
+        </div>
+        <div style="margin-top:12px">
+          <button class="btn btn-sm" onclick="copyText('அகர முதல எழுத்தெல்லாம் ஆதி\nபகவன் முதற்றே உலகு.', this)">Copy this kural</button>
+          <a href="detail.html?kural=1" class="btn btn-sm" style="margin-left:8px">Read full detail →</a>
+        </div>
+      </div>
+
+      <!-- The Work -->
+      <h2>திருக்குறள் பற்றி <span class="en">About the Thirukkural</span></h2>
+
+      <p>
+        The Thirukkural (literally "Sacred Verses") consists of 1330 couplets organized into
+        133 chapters of exactly 10 kurals each. Each couplet contains only <strong>seven words</strong> —
+        four in the first line and three in the second — yet conveys a complete philosophical thought.
+      </p>
+
+      <p>
+        The work is divided into three books:
+      </p>
+
+      <ul style="padding-left:24px;margin-bottom:16px;line-height:2;font-size:15px">
+        <li>
+          <strong style="font-family:var(--font-tamil)">அறத்துப்பால்</strong> (Aram — Virtue):
+          380 kurals on ethics, family life, domestic virtue, asceticism, and fate.
+        </li>
+        <li>
+          <strong style="font-family:var(--font-tamil)">பொருட்பால்</strong> (Porul — Wealth):
+          700 kurals on governance, statecraft, war, ministers, friendship, and conduct.
+        </li>
+        <li>
+          <strong style="font-family:var(--font-tamil)">காமத்துப்பால்</strong> (Inbam — Love):
+          250 kurals on the joy and anguish of romantic love, in the voices of lovers.
+        </li>
+      </ul>
+
+      <p>
+        The Thirukkural is remarkable for its <strong>secular and universal nature</strong> — it speaks
+        to all people regardless of religion, caste, or creed. It has been called the "Universal Veda"
+        (உலகப் பொது மறை) and the "Tamil Veda" (தமிழ் வேதம்).
+      </p>
+
+      <!-- Timeline -->
+      <h2>காலவரிசை <span class="en">Historical Timeline</span></h2>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-period">~300 BCE – 500 CE (estimated)</div>
+          <div class="timeline-event">Thiruvalluvar composes the Thirukkural in Mylapore (present-day Chennai).</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-period">~7th–8th century CE</div>
+          <div class="timeline-event">Classical Tamil scholars begin writing commentaries (urai) on the Thirukkural. Multiple competing schools of interpretation emerge.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-period">~11th–13th century CE</div>
+          <div class="timeline-event">Parimelalagar writes the most authoritative commentary still used today. He organises the 1330 kurals into the definitive chapter structure.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-period">1730 CE</div>
+          <div class="timeline-event">First European translation into Latin by Costanzo Beschi (Veeramamunivar), introducing Thirukkural to Western scholars.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-period">1856 CE</div>
+          <div class="timeline-event">G.U. Pope publishes a comprehensive English translation, making Thirukkural widely accessible to English-speaking readers worldwide.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-period">1935 CE</div>
+          <div class="timeline-event">Tamil Nadu officially recognises Thiruvalluvar Day. The Thirukkural is declared the state's literary heritage.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-period">2000 CE onwards</div>
+          <div class="timeline-event">The Thirukkural has been translated into over 80 languages. The iconic Thiruvalluvar statue (133 feet tall) is unveiled at Kanyakumari.</div>
+        </div>
+      </div>
+
+      <!-- Names of the work -->
+      <h2>நூலின் பெயர்கள் <span class="en">Names of the Work</span></h2>
+
+      <p>The Thirukkural is known by many names, each reflecting a different aspect of the work:</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0">
+        <div style="background:var(--color-cream);border-radius:var(--radius-md);padding:14px;border:1px solid var(--color-border)">
+          <div style="font-family:var(--font-tamil);font-size:15px;font-weight:700;color:var(--color-stone);margin-bottom:4px">முப்பால்</div>
+          <div style="font-size:12px;color:var(--color-text-faint)">The Three Parts — for its tripartite structure</div>
+        </div>
+        <div style="background:var(--color-cream);border-radius:var(--radius-md);padding:14px;border:1px solid var(--color-border)">
+          <div style="font-family:var(--font-tamil);font-size:15px;font-weight:700;color:var(--color-stone);margin-bottom:4px">உலகப் பொது மறை</div>
+          <div style="font-size:12px;color:var(--color-text-faint)">The Universal Scripture — for its timeless relevance</div>
+        </div>
+        <div style="background:var(--color-cream);border-radius:var(--radius-md);padding:14px;border:1px solid var(--color-border)">
+          <div style="font-family:var(--font-tamil);font-size:15px;font-weight:700;color:var(--color-stone);margin-bottom:4px">பொய்யாமொழி</div>
+          <div style="font-size:12px;color:var(--color-text-faint)">Words That Never Lie — for the truth in each verse</div>
+        </div>
+        <div style="background:var(--color-cream);border-radius:var(--radius-md);padding:14px;border:1px solid var(--color-border)">
+          <div style="font-family:var(--font-tamil);font-size:15px;font-weight:700;color:var(--color-stone);margin-bottom:4px">தெய்வநூல்</div>
+          <div style="font-size:12px;color:var(--color-text-faint)">The Divine Book — for its spiritual authority</div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div style="text-align:center;padding:40px 0 0;border-top:1px solid var(--color-border);margin-top:40px">
+        <p style="font-family:var(--font-tamil);font-size:18px;font-weight:700;color:var(--color-stone);margin-bottom:16px">
+          குறள்களை ஆராயுங்கள்
+        </p>
+        <p style="font-size:14px;color:var(--color-text-faint);margin-bottom:20px">
+          Explore all 1330 kurals — in Tamil and English, with meanings and tags.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="browse.html" class="btn btn-primary" style="font-size:14px;padding:10px 24px">Browse all kurals</a>
+          <a href="search.html" class="btn" style="font-size:14px;padding:10px 24px">Search kurals</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div style="text-align:center;font-size:11px;color:rgba(253,246,236,0.35)">
+        <span style="font-family:var(--font-tamil);color:var(--color-gold)">திருக்குறள்</span>
+        &nbsp;·&nbsp; திருவள்ளுவர் இயற்றியது &nbsp;·&nbsp; Free for all
+      </div>
+    </div>
+  </footer>
+
+  <script src="data/kurals.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>

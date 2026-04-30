@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>திருக்குறள் — Thirukkural | 1330 Sacred Couplets</title>
+  <meta name="description" content="Explore all 1330 Thirukkural couplets by Thiruvalluvar in Tamil and English with meanings, tags, and search." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-logo">
+        <div class="navbar-logo-circle">த</div>
+        <div>
+          <div class="navbar-logo-text">திருக்குறள்</div>
+          <div class="navbar-logo-sub">Thirukkural</div>
+        </div>
+      </a>
+      <ul class="navbar-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="browse.html">Browse</a></li>
+        <li><a href="search.html">Search</a></li>
+        <li><a href="thiruvalluvar.html">Thiruvalluvar</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <!-- Kolam background pattern (pure CSS/SVG) -->
+    <svg class="hero-kolam" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <defs>
+        <pattern id="kolam" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          <circle cx="40" cy="40" r="28" fill="none" stroke="#B8860B" stroke-width="0.6"/>
+          <circle cx="40" cy="40" r="16" fill="none" stroke="#B8860B" stroke-width="0.6"/>
+          <circle cx="40" cy="40" r="5" fill="#B8860B"/>
+          <line x1="12" y1="40" x2="68" y2="40" stroke="#B8860B" stroke-width="0.4"/>
+          <line x1="40" y1="12" x2="40" y2="68" stroke="#B8860B" stroke-width="0.4"/>
+          <line x1="20" y1="20" x2="60" y2="60" stroke="#B8860B" stroke-width="0.3"/>
+          <line x1="60" y1="20" x2="20" y2="60" stroke="#B8860B" stroke-width="0.3"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#kolam)"/>
+    </svg>
+
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-eyebrow">Over 2000 years of wisdom</div>
+        <h1 class="hero-title-ta">திருக்குறள்</h1>
+        <div class="hero-title-en">The Thirukkural — 1330 Sacred Couplets</div>
+        <p class="hero-desc">
+          The timeless masterwork of Thiruvalluvar — 1330 kurals across virtue, wealth,
+          and love. Explore every kural in Tamil and English with meanings,
+          commentary, and tags. Freely copy and share.
+        </p>
+
+        <!-- Search bar (goes to search.html) -->
+        <div class="search-bar" style="max-width:520px">
+          <input
+            type="text"
+            id="hero-search"
+            placeholder="Search in Tamil or English… e.g. அன்பு or friendship"
+            autocomplete="off"
+          />
+          <button onclick="heroSearch()">Search</button>
+        </div>
+
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-num">1330</div>
+            <div class="hero-stat-lbl">Kurals</div>
+          </div>
+          <div>
+            <div class="hero-stat-num">133</div>
+            <div class="hero-stat-lbl">Adhigarams</div>
+          </div>
+          <div>
+            <div class="hero-stat-num">3</div>
+            <div class="hero-stat-lbl">Pals</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="temple-strip"></div>
+
+  <!-- ===== KURAL OF THE DAY ===== -->
+  <section class="kotd-section">
+    <div class="container">
+      <div class="section-label">
+        Today's kural — <span class="today-date"></span>
+      </div>
+      <!-- Rendered by main.js → renderKuralOfTheDay() -->
+      <div id="kotd-container"></div>
+    </div>
+  </section>
+
+  <div class="temple-strip"></div>
+
+  <!-- ===== BROWSE BY PAL ===== -->
+  <section style="padding: 40px 0">
+    <div class="container">
+      <div class="section-label">Browse by Pal (பால்)</div>
+      <div class="pal-grid">
+
+        <a href="browse.html?pal=Virtue" class="pal-card pal-card-aram">
+          <div class="pal-card-dot"></div>
+          <div class="pal-card-name-ta">அறத்துப்பால்</div>
+          <div class="pal-card-name-en">Virtue — Aram</div>
+          <div class="pal-card-meta">380 kurals · 38 adhigarams</div>
+          <div class="pal-card-desc">
+            Ethics, righteousness, domestic virtue, asceticism, and moral conduct.
+          </div>
+        </a>
+
+        <a href="browse.html?pal=Wealth" class="pal-card pal-card-porul">
+          <div class="pal-card-dot"></div>
+          <div class="pal-card-name-ta">பொருட்பால்</div>
+          <div class="pal-card-name-en">Wealth — Porul</div>
+          <div class="pal-card-meta">700 kurals · 70 adhigarams</div>
+          <div class="pal-card-desc">
+            Governance, statecraft, warfare, friendship, and worldly conduct.
+          </div>
+        </a>
+
+        <a href="browse.html?pal=Love" class="pal-card pal-card-inbam">
+          <div class="pal-card-dot"></div>
+          <div class="pal-card-name-ta">காமத்துப்பால்</div>
+          <div class="pal-card-name-en">Love — Inbam</div>
+          <div class="pal-card-meta">250 kurals · 25 adhigarams</div>
+          <div class="pal-card-desc">
+            Romance, longing, union, separation, and the poetry of love.
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <span class="footer-ta">திருக்குறள்</span>
+          <span class="footer-text">
+            An open source project to make the wisdom of Thiruvalluvar<br>
+            freely accessible to everyone, in Tamil and English.
+          </span>
+        </div>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="browse.html">Browse all kurals</a></li>
+          <li><a href="search.html">Search</a></li>
+          <li><a href="thiruvalluvar.html">Thiruvalluvar biography</a></li>
+        </ul>
+        <div>
+          <div class="footer-text" style="margin-bottom:8px">Dataset sources:</div>
+          <ul class="footer-links">
+            <li><a href="https://github.com/vijayanandrp/Thirukkural-Tamil-Dataset" target="_blank">vijayanandrp/Thirukkural-Tamil-Dataset</a></li>
+            <li><a href="https://github.com/tk120404/thirukkural" target="_blank">tk120404/thirukkural</a></li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(180,134,11,0.2);font-size:11px;color:rgba(253,246,236,0.3);text-align:center">
+        திருவள்ளுவர் இயற்றியது · Written by Thiruvalluvar · Free for all · No rights reserved
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts: data first, then main logic -->
+  <script src="data/kurals.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function heroSearch() {
+      const q = document.getElementById("hero-search").value.trim();
+      if (q) window.location.href = "search.html?q=" + encodeURIComponent(q);
+    }
+    document.getElementById("hero-search").addEventListener("keydown", e => {
+      if (e.key === "Enter") heroSearch();
+    });
+  </script>
+
+</body>
+</html>

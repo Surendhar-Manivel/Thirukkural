@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search — திருக்குறள் | Thirukkural</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .search-hero { background: var(--header-bg-alpha); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); padding: 28px 0 0; }
+    .search-hero .container { display: flex; flex-direction: column; gap: 14px; }
+    .suggested-row { display:flex; align-items:center; gap:8px; padding:10px 0; border-top:1px solid rgba(180,134,11,0.15); }
+    .suggested-lbl { font-size:11px; color:rgba(253,246,236,0.35); white-space:nowrap; }
+    .sug-pill {
+      font-size: 11px; padding: 4px 12px; border-radius: var(--radius-pill);
+      border: 1px solid rgba(180,134,11,0.35); color: var(--color-gold);
+      cursor: pointer; background: transparent; transition: all 0.15s;
+      font-family: var(--font-ui);
+    }
+    .sug-pill:hover { background: rgba(180,134,11,0.15); color: #FAF0DC; }
+    .sug-pill-ta { font-family: var(--font-tamil); }
+    #search-count { font-size:13px; color:rgba(253,246,236,0.55); }
+    #search-count strong { color: var(--color-gold); }
+    .filter-pills { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+    .filter-pill {
+      font-size: 12px; padding: 5px 14px; border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-strong); color: var(--color-copper);
+      cursor: pointer; background: transparent; transition: all 0.15s;
+      font-family: var(--font-ui); font-weight: 500;
+    }
+    .filter-pill:hover { background: #FEF3DC; border-color: var(--color-gold); }
+    .filter-pill.active { background: var(--color-gold); color: var(--color-ivory); border-color: var(--color-gold); }
+    .result-meta { display:flex; align-items:center; gap:6px; margin-bottom:6px; flex-wrap:wrap; }
+    .result-score { font-size:11px; color:var(--color-text-faint); margin-left:auto; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-logo">
+        <div class="navbar-logo-circle">த</div>
+        <div>
+          <div class="navbar-logo-text">திருக்குறள்</div>
+          <div class="navbar-logo-sub">Thirukkural</div>
+        </div>
+      </a>
+      <ul class="navbar-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="browse.html">Browse</a></li>
+        <li><a href="search.html" class="active">Search</a></li>
+        <li><a href="thiruvalluvar.html">Thiruvalluvar</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- SEARCH HERO -->
+  <div class="search-hero">
+    <div class="container">
+      <div class="search-bar" style="max-width:600px">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search in Tamil or English… e.g. அன்பு or virtue"
+          autocomplete="off"
+        />
+        <button onclick="triggerSearch()">Search</button>
+      </div>
+
+      <div id="search-count"></div>
+
+      <div class="suggested-row">
+        <span class="suggested-lbl">Try:</span>
+        <button class="sug-pill sug-pill-ta" onclick="setSearch('காதல்')">காதல்</button>
+        <button class="sug-pill sug-pill-ta" onclick="setSearch('அன்பு')">அன்பு</button>
+        <button class="sug-pill sug-pill-ta" onclick="setSearch('மழை')">மழை</button>
+        <button class="sug-pill" onclick="setSearch('friendship')">friendship</button>
+        <button class="sug-pill" onclick="setSearch('virtue')">virtue</button>
+        <button class="sug-pill" onclick="setSearch('love')">love</button>
+        <button class="sug-pill" onclick="setSearch('rain')">rain</button>
+        <button class="sug-pill" onclick="setSearch('wisdom')">wisdom</button>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+
+  <div class="temple-strip"></div>
+
+  <!-- RESULTS -->
+  <div class="container" style="padding-top:28px;padding-bottom:48px">
+
+    <!-- Pal filter pills -->
+    <div class="filter-pills">
+      <button class="filter-pill active" data-pal="all" onclick="applyPalFilter(this,'all')">All</button>
+      <button class="filter-pill" data-pal="Virtue" onclick="applyPalFilter(this,'Virtue')">Virtue (அறம்)</button>
+      <button class="filter-pill" data-pal="Wealth" onclick="applyPalFilter(this,'Wealth')">Wealth (பொருள்)</button>
+      <button class="filter-pill" data-pal="Love" onclick="applyPalFilter(this,'Love')">Love (காமம்)</button>
+    </div>
+
+    <!-- Results container (rendered by main.js) -->
+    <div id="kural-list">
+      <div style="text-align:center;padding:48px;color:var(--color-text-faint)">
+        Start typing to search all 1330 kurals in Tamil and English.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div style="text-align:center;font-size:11px;color:rgba(253,246,236,0.35)">
+        <span style="font-family:var(--font-tamil);color:var(--color-gold)">திருக்குறள்</span>
+        &nbsp;·&nbsp; திருவள்ளுவர் இயற்றியது &nbsp;·&nbsp; Free for all
+      </div>
+    </div>
+  </footer>
+
+  <script src="data/kurals.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let allSearchResults = [];
+    let searchPalFilter = "all";
+
+    function triggerSearch() {
+      const q = document.getElementById("search-input").value;
+      runSearch(q);
+    }
+
+    function setSearch(q) {
+      document.getElementById("search-input").value = q;
+      runSearch(q);
+    }
+
+    function runSearch(q) {
+      const url = new URL(window.location);
+      if (q.trim()) url.searchParams.set("q", q); else url.searchParams.delete("q");
+      window.history.replaceState({}, "", url);
+
+      const num = parseInt(q.trim(), 10);
+      if (!isNaN(num) && String(num) === q.trim()) {
+        // Exact number → show that kural directly
+        const match = getKuralByNumber(num);
+        allSearchResults = match ? [match] : [];
+      } else {
+        allSearchResults = q.trim() ? searchKurals(q) : KURALS;
+      }
+
+      applyPalFilter(
+        document.querySelector(`.filter-pill[data-pal="${searchPalFilter}"]`),
+        searchPalFilter,
+        q
+      );
+    }
+
+    function applyPalFilter(btn, pal, query) {
+      searchPalFilter = pal;
+      document.querySelectorAll(".filter-pill").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+
+      const base = allSearchResults.length ? allSearchResults : KURALS;
+      const filtered = pal === "all" ? base : base.filter(k => k.pal.en === pal);
+      const q = query !== undefined ? query : document.getElementById("search-input").value;
+
+      renderKuralList(document.getElementById("kural-list"), filtered, q);
+
+      const countEl = document.getElementById("search-count");
+      if (q.trim()) {
+        countEl.innerHTML = filtered.length > 0
+          ? `Found <strong>${filtered.length}</strong> kural${filtered.length !== 1 ? "s" : ""} for "<strong>${q}</strong>"`
+          : `No results for "<strong>${q}</strong>"`;
+      } else {
+        countEl.innerHTML = `Showing <strong>${filtered.length}</strong> kurals`;
+      }
+    }
+
+    // On page load: check URL for pre-filled query
+    window.addEventListener("DOMContentLoaded", () => {
+      const initQ = new URLSearchParams(window.location.search).get("q") || "";
+      if (initQ) {
+        document.getElementById("search-input").value = initQ;
+        runSearch(initQ);
+      }
+      document.getElementById("search-input").addEventListener("input", e => runSearch(e.target.value));
+      document.getElementById("search-input").addEventListener("keydown", e => { if (e.key === "Enter") triggerSearch(); });
+    });
+  </script>
+
+</body>
+</html>

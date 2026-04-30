@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Kurals — திருக்குறள் | Thirukkural</title>
+  <meta name="description" content="Browse all 1330 Thirukkural couplets by Pal and Adhigaram." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Browse page specific styles */
+    .browse-header {
+      background: var(--header-bg-alpha);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 28px 0 0;
+      border-bottom: 2px solid var(--color-gold);
+    }
+    .browse-header .container { display:flex; flex-direction:column; gap:16px; }
+    .browse-header-top { display:flex; align-items:flex-end; justify-content:space-between; }
+    .browse-page-title-ta { font-family:var(--font-tamil); font-size:22px; font-weight:700; color:#FAF0DC; }
+    .browse-page-title-en { font-family:var(--font-english); font-size:13px; color:var(--color-gold); font-style:italic; margin-top:2px; }
+    .pal-tabs { display:flex; gap:0; }
+    .pal-tab {
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+      letter-spacing: 0.02em;
+      font-family: var(--font-ui);
+      border: none;
+      background: transparent;
+    }
+    .pal-tab-all   { color: rgba(253,246,236,0.55); }
+    .pal-tab-aram  { color: var(--color-gold); }
+    .pal-tab-porul { color: #5B8DD9; }
+    .pal-tab-inbam { color: #E06FA0; }
+    .pal-tab.active { color: #FAF0DC; }
+    .pal-tab-all.active   { border-bottom: 3px solid #FAF0DC; }
+    .pal-tab-aram.active  { border-bottom: 3px solid var(--color-gold); }
+    .pal-tab-porul.active { border-bottom: 3px solid #5B8DD9; }
+    .pal-tab-inbam.active { border-bottom: 3px solid #E06FA0; }
+    .pal-tab-count {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      margin-left: 5px;
+      background: rgba(255,255,255,0.08);
+    }
+    .browse-toolbar {
+      padding: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: 16px;
+    }
+    .toolbar-title { font-size:14px; font-weight:500; color:var(--color-text-body); }
+    .toolbar-title-ta { font-family:var(--font-tamil); }
+    .toolbar-sub { font-size:12px; color:var(--color-text-faint); margin-top:2px; }
+    .sort-select {
+      font-size: 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-parchment);
+      color: var(--color-text-body);
+      padding: 5px 10px;
+      outline: none;
+      cursor: pointer;
+      font-family: var(--font-ui);
+    }
+    .sidebar-title {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+      font-weight: 600;
+      padding: 0 4px;
+      margin-bottom: 8px;
+    }
+    .sidebar-search input {
+      width: 100%;
+      height: 32px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-parchment);
+      font-size: 12px;
+      padding: 0 10px;
+      outline: none;
+      color: var(--color-text-body);
+      margin-bottom: 12px;
+    }
+    .sidebar-search input:focus { border-color: var(--color-gold); }
+    .iyal-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+      padding: 10px 4px 4px;
+      border-top: 1px solid var(--color-border);
+      margin-top: 4px;
+    }
+    .iyal-label:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+    #kural-count { font-size:12px; color:var(--color-text-faint); }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-logo">
+        <div class="navbar-logo-circle">த</div>
+        <div>
+          <div class="navbar-logo-text">திருக்குறள்</div>
+          <div class="navbar-logo-sub">Thirukkural</div>
+        </div>
+      </a>
+      <ul class="navbar-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="browse.html" class="active">Browse</a></li>
+        <li><a href="search.html">Search</a></li>
+        <li><a href="thiruvalluvar.html">Thiruvalluvar</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- BROWSE HEADER -->
+  <div class="browse-header">
+    <div class="container">
+      <div class="browse-header-top">
+        <div>
+          <div class="browse-page-title-ta">அனைத்து குறள்களும்</div>
+          <div class="browse-page-title-en">Browse all 1330 kurals</div>
+        </div>
+      </div>
+      <!-- Pal Tabs -->
+      <div class="pal-tabs">
+        <button class="pal-tab pal-tab-all active pal-filter-btn" data-pal="all" onclick="switchPalTab(this,'all')">
+          All <span class="pal-tab-count">1330</span>
+        </button>
+        <button class="pal-tab pal-tab-aram pal-filter-btn" data-pal="Virtue" onclick="switchPalTab(this,'Virtue')">
+          அறத்துப்பால் <span class="pal-tab-count">380</span>
+        </button>
+        <button class="pal-tab pal-tab-porul pal-filter-btn" data-pal="Wealth" onclick="switchPalTab(this,'Wealth')">
+          பொருட்பால் <span class="pal-tab-count">700</span>
+        </button>
+        <button class="pal-tab pal-tab-inbam pal-filter-btn" data-pal="Love" onclick="switchPalTab(this,'Love')">
+          காமத்துப்பால் <span class="pal-tab-count">250</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="temple-strip"></div>
+
+  <!-- BROWSE BODY -->
+  <div class="container" style="padding-top:24px;padding-bottom:48px">
+    <div class="browse-layout">
+
+      <!-- Sidebar -->
+      <aside class="browse-sidebar">
+        <div class="sidebar-title">Adhigarams</div>
+        <div class="sidebar-search">
+          <input
+            type="text"
+            placeholder="Filter chapters…"
+            oninput="filterSidebar(this.value)"
+            id="sidebar-filter"
+          />
+        </div>
+        <ul class="adhigaram-list" id="adhigaram-sidebar">
+          <!-- Rendered by JS below -->
+        </ul>
+      </aside>
+
+      <!-- Main list -->
+      <main class="browse-main">
+        <div class="browse-toolbar">
+          <div>
+            <div class="toolbar-title" id="chapter-title">
+              <span class="toolbar-title-ta">அனைத்து குறள்கள்</span>
+            </div>
+            <div class="toolbar-sub" id="kural-count">Loading…</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn btn-sm sidebar-toggle-btn" onclick="toggleBrowseSidebar()" style="display:none" id="sidebar-toggle">☰ Chapters</button>
+            <select class="sort-select" onchange="sortResults(this.value)">
+            <option value="num-asc">Number ↑</option>
+            <option value="num-desc">Number ↓</option>
+            <option value="chapter">By chapter</option>
+          </select>
+          </div>
+        </div>
+
+        <div id="kural-list">
+          <div style="text-align:center;padding:40px;color:var(--color-text-faint)">Loading kurals…</div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div style="text-align:center;font-size:11px;color:rgba(253,246,236,0.35)">
+        <span style="font-family:var(--font-tamil);color:var(--color-gold)">திருக்குறள்</span>
+        &nbsp;·&nbsp; திருவள்ளுவர் இயற்றியது &nbsp;·&nbsp; Free for all
+      </div>
+    </div>
+  </footer>
+
+  <script src="data/kurals.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Build the sidebar from the KURALS data
+    function buildSidebar(palFilter) {
+      const sidebar = document.getElementById("adhigaram-sidebar");
+      const seen = new Set();
+      const groups = {}; // iyal.en → [{adhigaram obj}]
+
+      KURALS
+        .filter(k => palFilter === "all" || k.pal.en === palFilter)
+        .forEach(k => {
+          const key = k.adhigaram.number;
+          if (!seen.has(key)) {
+            seen.add(key);
+            const iyal = k.iyal.en;
+            if (!groups[iyal]) groups[iyal] = [];
+            groups[iyal].push(k.adhigaram);
+          }
+        });
+
+      let html = "";
+      for (const [iyal, adhis] of Object.entries(groups)) {
+        html += `<li class="iyal-label">${iyal}</li>`;
+        adhis.forEach(a => {
+          html += `
+            <li class="adhigaram-item" data-adhi="${a.number}" onclick="filterByAdhi(${a.number}, '${a.ta}', '${a.en}')">
+              <div class="adhigaram-item-ta">${a.ta}</div>
+              <div class="adhigaram-item-en">${a.en}</div>
+            </li>`;
+        });
+      }
+      sidebar.innerHTML = html;
+    }
+
+    function filterByAdhi(n, ta, en) {
+      document.querySelectorAll(".adhigaram-item").forEach(el => {
+        el.classList.toggle("active", parseInt(el.dataset.adhi) === n);
+      });
+      const filtered = KURALS.filter(k => k.adhigaram.number === n);
+      document.getElementById("chapter-title").innerHTML =
+        `<span class="toolbar-title-ta">${ta}</span> — ${en}`;
+      document.getElementById("kural-count").textContent =
+        `Adhigaram ${n} · ${filtered.length} kural${filtered.length !== 1 ? "s" : ""}`;
+      renderKuralList(document.getElementById("kural-list"), filtered);
+    }
+
+    function filterSidebar(q) {
+      document.querySelectorAll("#adhigaram-sidebar .adhigaram-item").forEach(el => {
+        const text = el.textContent.toLowerCase();
+        el.style.display = !q || text.includes(q.toLowerCase()) ? "" : "none";
+      });
+    }
+
+    let currentSortedKurals = [];
+
+    function sortResults(val) {
+      let sorted = [...currentSortedKurals];
+      if (val === "num-asc")  sorted.sort((a, b) => a.number - b.number);
+      if (val === "num-desc") sorted.sort((a, b) => b.number - a.number);
+      if (val === "chapter")  sorted.sort((a, b) => a.adhigaram.number - b.adhigaram.number);
+      renderKuralList(document.getElementById("kural-list"), sorted);
+    }
+
+    function switchPalTab(btn, pal) {
+      document.querySelectorAll(".pal-tab").forEach(t => t.classList.remove("active"));
+      btn.classList.add("active");
+      const filtered = filterByPal(pal);
+      currentSortedKurals = filtered;
+      document.getElementById("chapter-title").innerHTML =
+        pal === "all" ? `<span class="toolbar-title-ta">அனைத்து குறள்கள்</span>` :
+        `<span class="toolbar-title-ta">${filtered[0]?.pal.ta || ""}</span> — ${pal}`;
+      document.getElementById("kural-count").textContent = `${filtered.length} kurals`;
+      renderKuralList(document.getElementById("kural-list"), filtered);
+      buildSidebar(pal);
+    }
+
+    // Init: check URL param ?pal= or ?tag=
+    const urlParams = new URLSearchParams(window.location.search);
+    const initPal  = urlParams.get("pal") || "all";
+    const initTag  = urlParams.get("tag");
+    const initLang = urlParams.get("lang") || "en";
+    const initTab  = document.querySelector(`.pal-filter-btn[data-pal="${initPal}"]`) ||
+                     document.querySelector('.pal-filter-btn[data-pal="all"]');
+    switchPalTab(initTab, initPal);
+    if (initTag) setTagFilter(initTag, initLang);
+
+    // Show sidebar toggle button on mobile
+    function checkMobile() {
+      const btn = document.getElementById("sidebar-toggle");
+      if (btn) btn.style.display = window.innerWidth <= 768 ? "inline-flex" : "none";
+    }
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+  </script>
+  <script>
+    function toggleBrowseSidebar() {
+      const sidebar = document.querySelector(".browse-sidebar");
+      if (!sidebar) return;
+      const isVisible = sidebar.style.display === "block";
+      sidebar.style.display = isVisible ? "none" : "block";
+      sidebar.style.position = isVisible ? "" : "fixed";
+      sidebar.style.top = isVisible ? "" : "62px";
+      sidebar.style.left = isVisible ? "" : "0";
+      sidebar.style.right = isVisible ? "" : "0";
+      sidebar.style.bottom = isVisible ? "" : "0";
+      sidebar.style.zIndex = isVisible ? "" : "50";
+      sidebar.style.overflowY = "auto";
+    }
+  </script>
+
+</body>
+</html>
