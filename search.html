@@ -64,21 +64,21 @@
           placeholder="Search in Tamil or English… e.g. அன்பு or virtue"
           autocomplete="off"
         />
-        <button onclick="triggerSearch()">Search</button>
+        <button type="button" id="search-btn">Search</button>
       </div>
 
       <div id="search-count"></div>
 
       <div class="suggested-row">
         <span class="suggested-lbl">Try:</span>
-        <button class="sug-pill sug-pill-ta" onclick="setSearch('காதல்')">காதல்</button>
-        <button class="sug-pill sug-pill-ta" onclick="setSearch('அன்பு')">அன்பு</button>
-        <button class="sug-pill sug-pill-ta" onclick="setSearch('மழை')">மழை</button>
-        <button class="sug-pill" onclick="setSearch('friendship')">friendship</button>
-        <button class="sug-pill" onclick="setSearch('virtue')">virtue</button>
-        <button class="sug-pill" onclick="setSearch('love')">love</button>
-        <button class="sug-pill" onclick="setSearch('rain')">rain</button>
-        <button class="sug-pill" onclick="setSearch('wisdom')">wisdom</button>
+        <button class="sug-pill sug-pill-ta" data-search="காதல்">காதல்</button>
+        <button class="sug-pill sug-pill-ta" data-search="அன்பு">அன்பு</button>
+        <button class="sug-pill sug-pill-ta" data-search="மழை">மழை</button>
+        <button class="sug-pill" data-search="friendship">friendship</button>
+        <button class="sug-pill" data-search="virtue">virtue</button>
+        <button class="sug-pill" data-search="love">love</button>
+        <button class="sug-pill" data-search="rain">rain</button>
+        <button class="sug-pill" data-search="wisdom">wisdom</button>
       </div>
     </div>
     <div style="height:16px"></div>
@@ -91,10 +91,10 @@
 
     <!-- Pal filter pills -->
     <div class="filter-pills">
-      <button class="filter-pill active" data-pal="all" onclick="applyPalFilter(this,'all')">All</button>
-      <button class="filter-pill" data-pal="Virtue" onclick="applyPalFilter(this,'Virtue')">Virtue (அறம்)</button>
-      <button class="filter-pill" data-pal="Wealth" onclick="applyPalFilter(this,'Wealth')">Wealth (பொருள்)</button>
-      <button class="filter-pill" data-pal="Love" onclick="applyPalFilter(this,'Love')">Love (காமம்)</button>
+      <button class="filter-pill active pal-filter" data-pal="all">All</button>
+      <button class="filter-pill pal-filter" data-pal="Virtue">Virtue (அறம்)</button>
+      <button class="filter-pill pal-filter" data-pal="Wealth">Wealth (பொருள்)</button>
+      <button class="filter-pill pal-filter" data-pal="Love">Love (காமம்)</button>
     </div>
 
     <!-- Results container (rendered by main.js) -->
@@ -119,71 +119,103 @@
   <script src="data/kurals.js"></script>
   <script src="js/main.js"></script>
   <script>
-    let allSearchResults = [];
-    let searchPalFilter = "all";
+    const SearchApp = {
+      allResults: [],
+      palFilter: "all",
+      timeout: null,
 
-    function triggerSearch() {
-      const q = document.getElementById("search-input").value;
-      runSearch(q);
-    }
+      triggerSearch() {
+        const q = document.getElementById("search-input").value;
+        this.runSearch(q);
+      },
 
-    function setSearch(q) {
-      document.getElementById("search-input").value = q;
-      runSearch(q);
-    }
+      setSearch(q) {
+        document.getElementById("search-input").value = q;
+        this.runSearch(q);
+      },
 
-    function runSearch(q) {
-      const url = new URL(window.location);
-      if (q.trim()) url.searchParams.set("q", q); else url.searchParams.delete("q");
-      window.history.replaceState({}, "", url);
+      runSearch(q) {
+        const url = new URL(window.location);
+        if (q.trim()) {
+          url.searchParams.set("q", q);
+        } else {
+          url.searchParams.delete("q");
+        }
+        window.history.replaceState({}, "", url);
 
-      const num = parseInt(q.trim(), 10);
-      if (!isNaN(num) && String(num) === q.trim()) {
-        // Exact number → show that kural directly
-        const match = getKuralByNumber(num);
-        allSearchResults = match ? [match] : [];
-      } else {
-        allSearchResults = q.trim() ? searchKurals(q) : KURALS;
+        const num = parseInt(q.trim(), 10);
+        if (!isNaN(num) && String(num) === q.trim()) {
+          const match = getKuralByNumber(num);
+          this.allResults = match ? [match] : [];
+        } else {
+          this.allResults = q.trim() ? searchKurals(q) : KURALS;
+        }
+
+        this.applyPalFilter(
+          document.querySelector(`.filter-pill[data-pal="${this.palFilter}"]`),
+          this.palFilter,
+          q
+        );
+      },
+
+      debouncedSearch(q) {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => this.runSearch(q), 50);
+      },
+
+      applyPalFilter(btn, pal, query) {
+        this.palFilter = pal;
+        document.querySelectorAll(".filter-pill").forEach(b => b.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+
+        const base = this.allResults.length ? this.allResults : KURALS;
+        const filtered = pal === "all" ? base : base.filter(k => k.pal.en === pal);
+        const q = query !== undefined ? query : document.getElementById("search-input").value;
+
+        renderKuralList(document.getElementById("kural-list"), filtered, q);
+
+        const countEl = document.getElementById("search-count");
+        if (q.trim()) {
+          countEl.innerHTML = filtered.length > 0
+            ? `Found <strong>${filtered.length}</strong> kural${filtered.length !== 1 ? "s" : ""} for "<strong>${q}</strong>"`
+            : `No results for "<strong>${q}</strong>"`;
+        } else {
+          countEl.innerHTML = `Showing <strong>${filtered.length}</strong> kurals`;
+        }
+      },
+
+      init() {
+        const searchInput = document.getElementById("search-input");
+        const searchBtn = document.getElementById("search-btn");
+
+        if (searchInput) {
+          searchInput.addEventListener("input", (e) => this.debouncedSearch(e.target.value));
+          searchInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") this.triggerSearch();
+          });
+        }
+
+        if (searchBtn) {
+          searchBtn.addEventListener("click", () => this.triggerSearch());
+        }
+
+        document.querySelectorAll(".sug-pill").forEach(btn => {
+          btn.addEventListener("click", () => this.setSearch(btn.dataset.search));
+        });
+
+        document.querySelectorAll(".pal-filter").forEach(btn => {
+          btn.addEventListener("click", () => this.applyPalFilter(btn, btn.dataset.pal));
+        });
+
+        const initQ = new URLSearchParams(window.location.search).get("q") || "";
+        if (initQ) {
+          searchInput.value = initQ;
+          this.runSearch(initQ);
+        }
       }
+    };
 
-      applyPalFilter(
-        document.querySelector(`.filter-pill[data-pal="${searchPalFilter}"]`),
-        searchPalFilter,
-        q
-      );
-    }
-
-    function applyPalFilter(btn, pal, query) {
-      searchPalFilter = pal;
-      document.querySelectorAll(".filter-pill").forEach(b => b.classList.remove("active"));
-      if (btn) btn.classList.add("active");
-
-      const base = allSearchResults.length ? allSearchResults : KURALS;
-      const filtered = pal === "all" ? base : base.filter(k => k.pal.en === pal);
-      const q = query !== undefined ? query : document.getElementById("search-input").value;
-
-      renderKuralList(document.getElementById("kural-list"), filtered, q);
-
-      const countEl = document.getElementById("search-count");
-      if (q.trim()) {
-        countEl.innerHTML = filtered.length > 0
-          ? `Found <strong>${filtered.length}</strong> kural${filtered.length !== 1 ? "s" : ""} for "<strong>${q}</strong>"`
-          : `No results for "<strong>${q}</strong>"`;
-      } else {
-        countEl.innerHTML = `Showing <strong>${filtered.length}</strong> kurals`;
-      }
-    }
-
-    // On page load: check URL for pre-filled query
-    window.addEventListener("DOMContentLoaded", () => {
-      const initQ = new URLSearchParams(window.location.search).get("q") || "";
-      if (initQ) {
-        document.getElementById("search-input").value = initQ;
-        runSearch(initQ);
-      }
-      document.getElementById("search-input").addEventListener("input", e => runSearch(e.target.value));
-      document.getElementById("search-input").addEventListener("keydown", e => { if (e.key === "Enter") triggerSearch(); });
-    });
+    document.addEventListener("DOMContentLoaded", () => SearchApp.init());
   </script>
 
 </body>
