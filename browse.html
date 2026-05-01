@@ -187,18 +187,31 @@
             </div>
             <div class="toolbar-sub" id="kural-count">Loading…</div>
           </div>
-          <div style="display:flex;gap:8px;align-items:center">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
             <button class="btn btn-sm sidebar-toggle-btn" onclick="toggleBrowseSidebar()" style="display:none" id="sidebar-toggle">☰ Chapters</button>
             <select class="sort-select" onchange="sortResults(this.value)">
-            <option value="num-asc">Number ↑</option>
-            <option value="num-desc">Number ↓</option>
-            <option value="chapter">By chapter</option>
-          </select>
+              <option value="num-asc">Number ↑</option>
+              <option value="num-desc">Number ↓</option>
+              <option value="chapter">By chapter</option>
+            </select>
+            <select class="sort-select" id="results-per-page" onchange="handleResultsPerPageChange(this.value)">
+              <option value="10">10 per page</option>
+              <option value="20" selected>20 per page</option>
+              <option value="50">50 per page</option>
+              <option value="100">100 per page</option>
+            </select>
           </div>
         </div>
 
         <div id="kural-list">
           <div style="text-align:center;padding:40px;color:var(--color-text-faint)">Loading kurals…</div>
+        </div>
+
+        <!-- Pagination controls -->
+        <div class="pagination-controls" id="pagination-controls" style="display:none">
+          <button class="btn btn-sm" id="prev-btn" onclick="previousPage()">← Prev</button>
+          <div class="pagination-info" id="pagination-info"></div>
+          <button class="btn btn-sm" id="next-btn" onclick="nextPage()">Next →</button>
         </div>
       </main>
 
@@ -269,30 +282,36 @@
       });
     }
 
-    let currentSortedKurals = [];
-
     function sortResults(val) {
-      let sorted = [...currentSortedKurals];
+      let sorted = [...paginatedKurals];
       if (val === "num-asc")  sorted.sort((a, b) => a.number - b.number);
       if (val === "num-desc") sorted.sort((a, b) => b.number - a.number);
       if (val === "chapter")  sorted.sort((a, b) => a.adhigaram.number - b.adhigaram.number);
-      renderKuralList(document.getElementById("kural-list"), sorted);
+      paginatedKurals = sorted;
+      currentPage = 1;
+      renderPaginatedKurals();
     }
 
     function switchPalTab(btn, pal) {
       document.querySelectorAll(".pal-tab").forEach(t => t.classList.remove("active"));
       btn.classList.add("active");
       const filtered = filterByPal(pal);
-      currentSortedKurals = filtered;
+      paginatedKurals = filtered;
+      currentPage = 1;
       document.getElementById("chapter-title").innerHTML =
         pal === "all" ? `<span class="toolbar-title-ta">அனைத்து குறள்கள்</span>` :
         `<span class="toolbar-title-ta">${filtered[0]?.pal.ta || ""}</span> — ${pal}`;
       document.getElementById("kural-count").textContent = `${filtered.length} kurals`;
-      renderKuralList(document.getElementById("kural-list"), filtered);
+      renderPaginatedKurals();
       buildSidebar(pal);
     }
 
-    // Init: check URL param ?pal= or ?tag=
+    // Init: restore saved results per page setting
+    const savedResultsPerPage = localStorage.getItem("kural-results-per-page") || "20";
+    resultsPerPage = parseInt(savedResultsPerPage);
+    document.getElementById("results-per-page").value = savedResultsPerPage;
+
+    // Check URL param ?pal= or ?tag=
     const urlParams = new URLSearchParams(window.location.search);
     const initPal  = urlParams.get("pal") || "all";
     const initTag  = urlParams.get("tag");

@@ -63,9 +63,13 @@
 html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-ui);
-  background: var(--bg-body);
+  background-image:
+    radial-gradient(ellipse 140% 80% at 10% 15%, rgba(184,134,11,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 70% at 90% 85%, rgba(123,63,0,0.06) 0%, transparent 50%),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><defs><pattern id="ornament" x="0" y="0" width="160" height="160" patternUnits="userSpaceOnUse" opacity="0.03"><path d="M80,40 Q100,60 80,80 Q60,60 80,40 M80,80 Q100,100 80,120 Q60,100 80,80 M40,80 Q60,60 80,80 Q60,100 40,80 M120,80 Q140,60 160,80 Q140,100 120,80" stroke="rgba(184,134,11,1)" fill="none" stroke-width="1"/></pattern></defs><rect width="800" height="800" fill="%23F8EDD5"/><rect width="800" height="800" fill="url(%23ornament)"/></svg>') center / cover,
+    linear-gradient(160deg, #F8EDD5 0%, #F2E2BC 35%, #EDD8AA 65%, #F2E5C5 100%);
   background-attachment: fixed;
-  background-size: cover;
+  background-size: cover, cover, cover, cover;
   color: var(--color-text-body);
   line-height: 1.6;
   font-size: 15px;
@@ -665,6 +669,27 @@ mark.highlight {
   transition: all 0.15s;
 }
 .tag-filter-bar-clear:hover { color: var(--color-copper); border-color: var(--color-gold); background: #FEF3DC; }
+
+/* ---- PAGINATION ---- */
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px 16px;
+  margin-top: 32px;
+}
+.pagination-controls .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pagination-info {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  min-width: 120px;
+  text-align: center;
+}
 
 /* ---- SOCIAL SHARE ---- */
 .share-section {

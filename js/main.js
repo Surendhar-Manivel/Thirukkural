@@ -114,6 +114,63 @@ function highlightText(text, query) {
 
 let currentPalFilter = "all";
 let currentTagFilter = null;
+let currentPage = 1;
+let resultsPerPage = 20;
+let paginatedKurals = [];
+
+function handleResultsPerPageChange(value) {
+  resultsPerPage = parseInt(value);
+  localStorage.setItem("kural-results-per-page", resultsPerPage);
+  currentPage = 1;
+  renderPaginatedKurals();
+}
+
+function renderPaginatedKurals() {
+  if (paginatedKurals.length === 0) {
+    document.getElementById("kural-list").innerHTML = `
+      <div style="text-align:center;padding:48px 24px;color:var(--color-text-faint)">
+        <div style="font-size:36px;margin-bottom:12px">🔍</div>
+        <div style="font-size:16px;font-weight:500;margin-bottom:6px">No kurals found</div>
+        <div style="font-size:13px">Try a different search term or browse by Pal above.</div>
+      </div>
+    `;
+    document.getElementById("pagination-controls").style.display = "none";
+    return;
+  }
+
+  const totalPages = Math.ceil(paginatedKurals.length / resultsPerPage);
+  const start = (currentPage - 1) * resultsPerPage;
+  const end = start + resultsPerPage;
+  const pageKurals = paginatedKurals.slice(start, end);
+
+  renderKuralList(document.getElementById("kural-list"), pageKurals);
+
+  if (totalPages > 1) {
+    document.getElementById("pagination-controls").style.display = "flex";
+    document.getElementById("prev-btn").disabled = currentPage === 1;
+    document.getElementById("next-btn").disabled = currentPage === totalPages;
+    document.getElementById("pagination-info").textContent = `Page ${currentPage} of ${totalPages}`;
+  } else {
+    document.getElementById("pagination-controls").style.display = "none";
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function nextPage() {
+  const totalPages = Math.ceil(paginatedKurals.length / resultsPerPage);
+  if (currentPage < totalPages) {
+    currentPage++;
+    renderPaginatedKurals();
+  }
+}
+
+function previousPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    renderPaginatedKurals();
+  }
+}
 
 function setPalFilter(pal) {
   currentPalFilter = pal;
@@ -121,16 +178,18 @@ function setPalFilter(pal) {
   document.querySelectorAll(".pal-filter-btn").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.pal === pal);
   });
-  const kurals = filterByPal(pal);
-  renderKuralList(document.getElementById("kural-list"), kurals);
+  paginatedKurals = filterByPal(pal);
+  currentPage = 1;
+  renderPaginatedKurals();
   const countEl = document.getElementById("search-count");
-  if (countEl) countEl.textContent = `${kurals.length} kurals`;
+  if (countEl) countEl.textContent = `${paginatedKurals.length} kurals`;
 }
 
 function setAdhigaramFilter(adhiNum) {
   clearTagFilterUI();
-  const filtered = KURALS.filter(k => k.adhigaram.number === adhiNum);
-  renderKuralList(document.getElementById("kural-list"), filtered);
+  paginatedKurals = KURALS.filter(k => k.adhigaram.number === adhiNum);
+  currentPage = 1;
+  renderPaginatedKurals();
   document.querySelectorAll(".adhigaram-item").forEach(el => {
     el.classList.toggle("active", parseInt(el.dataset.adhi) === adhiNum);
   });
@@ -143,9 +202,10 @@ function setTagFilter(tag, lang) {
     return;
   }
   currentTagFilter = { tag, lang };
-  const filtered = filterByTag(tag, lang);
-  renderKuralList(container, filtered);
-  showTagFilterBar(tag, filtered.length);
+  paginatedKurals = filterByTag(tag, lang);
+  currentPage = 1;
+  renderPaginatedKurals();
+  showTagFilterBar(tag, paginatedKurals.length);
   const url = new URL(window.location.href);
   url.searchParams.set("tag", tag);
   url.searchParams.set("lang", lang || "en");
