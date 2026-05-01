@@ -30,6 +30,7 @@ function renderKuralCard(kural, highlight = "") {
   const v         = getVotes(kural.number);
 
   return `
+    <a href="detail.html?kural=${kural.number}" class="kural-card-link">
     <div class="kural-card" id="kural-${kural.number}">
       <div class="kural-card-header">
         <div>
@@ -39,11 +40,11 @@ function renderKuralCard(kural, highlight = "") {
           </div>
           <div class="kural-card-adhigaram">${kural.adhigaram.ta} · ${kural.adhigaram.en}</div>
         </div>
-        <div class="kural-votes" id="votes-${kural.number}">
-          <button class="vote-btn vote-btn-up${v.userVote === 'up' ? ' voted' : ''}" onclick="castVote(${kural.number},'up')" title="Upvote this kural">
+        <div class="kural-votes" id="votes-${kural.number}" onclick="event.preventDefault();">
+          <button class="vote-btn vote-btn-up${v.userVote === 'up' ? ' voted' : ''}" onclick="event.stopPropagation(); castVote(${kural.number},'up')" title="Upvote this kural">
             ▲ <span class="vote-count">${v.up}</span>
           </button>
-          <button class="vote-btn vote-btn-down${v.userVote === 'down' ? ' voted' : ''}" onclick="castVote(${kural.number},'down')" title="Downvote this kural">
+          <button class="vote-btn vote-btn-down${v.userVote === 'down' ? ' voted' : ''}" onclick="event.stopPropagation(); castVote(${kural.number},'down')" title="Downvote this kural">
             ▼ <span class="vote-count">${v.down}</span>
           </button>
         </div>
@@ -55,14 +56,14 @@ function renderKuralCard(kural, highlight = "") {
         <strong>Meaning (English):</strong> ${meaningEn}
       </div>
       <div class="kural-tags">${renderTagsHtml(kural)}</div>
-      <div class="kural-actions">
-        <button class="btn btn-primary btn-sm" onclick="copyText('${escapeForAttr(fullKural)}', this)">Copy kural</button>
-        <button class="btn btn-sm" onclick="copyText('${escapeForAttr(kural.meaning.en)}', this)">Copy meaning</button>
-        <button class="btn btn-sm" onclick="copyFull(${kural.number}, this)">Copy full</button>
-        <a href="detail.html?kural=${kural.number}" class="btn btn-sm">View full →</a>
-        <button class="btn btn-sm" onclick="shareKural(${kural.number}, this)" title="Share this kural">↗ Share</button>
+      <div class="kural-actions" onclick="event.preventDefault();">
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); copyText('${escapeForAttr(fullKural)}', this)">Copy kural</button>
+        <button class="btn btn-sm" onclick="event.stopPropagation(); copyText('${escapeForAttr(kural.meaning.en)}', this)">Copy meaning</button>
+        <button class="btn btn-sm" onclick="event.stopPropagation(); copyFull(${kural.number}, this)">Copy full</button>
+        <button class="btn btn-sm" onclick="event.stopPropagation(); shareKural(${kural.number}, this)" title="Share this kural">↗ Share</button>
       </div>
     </div>
+    </a>
   `;
 }
 

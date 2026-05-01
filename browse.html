@@ -32,7 +32,13 @@
       font-family: var(--font-ui);
       border: none;
       background: transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
+    .pal-tab-ta { font-family: var(--font-tamil); font-weight: 600; }
+    .pal-tab-en { font-size: 11px; font-weight: 500; opacity: 0.75; }
     .pal-tab-all   { color: rgba(253,246,236,0.55); }
     .pal-tab-aram  { color: var(--color-gold); }
     .pal-tab-porul { color: #5B8DD9; }
@@ -144,13 +150,13 @@
           All <span class="pal-tab-count">1330</span>
         </button>
         <button class="pal-tab pal-tab-aram pal-filter-btn" data-pal="Virtue" onclick="switchPalTab(this,'Virtue')">
-          அறத்துப்பால் <span class="pal-tab-count">380</span>
+          <span class="pal-tab-ta">அறத்துப்பால்</span> <span class="pal-tab-en">Virtue</span> <span class="pal-tab-count">380</span>
         </button>
         <button class="pal-tab pal-tab-porul pal-filter-btn" data-pal="Wealth" onclick="switchPalTab(this,'Wealth')">
-          பொருட்பால் <span class="pal-tab-count">700</span>
+          <span class="pal-tab-ta">பொருட்பால்</span> <span class="pal-tab-en">Wealth</span> <span class="pal-tab-count">700</span>
         </button>
         <button class="pal-tab pal-tab-inbam pal-filter-btn" data-pal="Love" onclick="switchPalTab(this,'Love')">
-          காமத்துப்பால் <span class="pal-tab-count">250</span>
+          <span class="pal-tab-ta">காமத்துப்பால்</span> <span class="pal-tab-en">Love</span> <span class="pal-tab-count">250</span>
         </button>
       </div>
     </div>

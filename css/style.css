@@ -276,6 +276,11 @@ img { max-width: 100%; display: block; }
 .pal-inbam { background: #FEF0F5; color: #4B1528;             border: 1px solid rgba(139,26,74,0.25); }
 
 /* ---- KURAL CARD ---- */
+.kural-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
 .kural-card {
   background: var(--card-bg);
   backdrop-filter: blur(10px);
@@ -283,10 +288,15 @@ img { max-width: 100%; display: block; }
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
   margin-bottom: var(--space-md);
+  cursor: pointer;
 }
-.kural-card:hover { border-color: var(--color-gold); }
+.kural-card-link:hover .kural-card {
+  border-color: var(--color-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
 .kural-card-number {
   font-family: var(--font-english);
   font-size: 12px;
