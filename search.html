@@ -123,6 +123,8 @@
       allResults: [],
       palFilter: "all",
       timeout: null,
+      hasSearched: false,
+      wordCache: null,
 
       triggerSearch() {
         const q = document.getElementById("search-input").value;
@@ -143,12 +145,18 @@
         }
         window.history.replaceState({}, "", url);
 
-        const num = parseInt(q.trim(), 10);
-        if (!isNaN(num) && String(num) === q.trim()) {
-          const match = getKuralByNumber(num);
-          this.allResults = match ? [match] : [];
+        if (q.trim()) {
+          this.hasSearched = true;
+          const num = parseInt(q.trim(), 10);
+          if (!isNaN(num) && String(num) === q.trim()) {
+            const match = getKuralByNumber(num);
+            this.allResults = match ? [match] : [];
+          } else {
+            this.allResults = searchKurals(q);
+          }
         } else {
-          this.allResults = q.trim() ? searchKurals(q) : KURALS;
+          this.hasSearched = false;
+          this.allResults = [];
         }
 
         this.applyPalFilter(
@@ -168,20 +176,82 @@
         document.querySelectorAll(".filter-pill").forEach(b => b.classList.remove("active"));
         if (btn) btn.classList.add("active");
 
-        const base = this.allResults.length ? this.allResults : KURALS;
+        const base = this.hasSearched ? this.allResults : KURALS;
         const filtered = pal === "all" ? base : base.filter(k => k.pal.en === pal);
         const q = query !== undefined ? query : document.getElementById("search-input").value;
 
         renderKuralList(document.getElementById("kural-list"), filtered, q);
 
         const countEl = document.getElementById("search-count");
+        let countHtml = "";
         if (q.trim()) {
-          countEl.innerHTML = filtered.length > 0
-            ? `Found <strong>${filtered.length}</strong> kural${filtered.length !== 1 ? "s" : ""} for "<strong>${q}</strong>"`
-            : `No results for "<strong>${q}</strong>"`;
+          if (filtered.length > 0) {
+            countHtml = `Found <strong>${filtered.length}</strong> kural${filtered.length !== 1 ? "s" : ""} for "<strong>${q}</strong>"`;
+          } else {
+            countHtml = `No results for "<strong>${q}</strong>"`;
+          }
         } else {
-          countEl.innerHTML = `Showing <strong>${filtered.length}</strong> kurals`;
+          countHtml = `Showing <strong>${filtered.length}</strong> kurals`;
         }
+
+        if (q.trim() && filtered.length > 0) {
+          const suggestion = this.findSuggestion(q);
+          if (suggestion && suggestion !== q.toLowerCase()) {
+            countHtml += ` &nbsp; | &nbsp; Did you mean: <button class="btn btn-sm" style="margin:0;padding:2px 8px;font-size:11px" onclick="SearchApp.setSearch('${this.escapeForAttr(suggestion)}');">${suggestion}</button>`;
+          }
+        }
+
+        countEl.innerHTML = countHtml;
+      },
+
+      escapeForAttr(str) {
+        return str.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/\n/g, "\\n").replace(/"/g, "&quot;");
+      },
+
+      getWordCache() {
+        if (this.wordCache) return this.wordCache;
+        const words = new Set();
+        KURALS.forEach(k => {
+          [k.kural.line1, k.kural.line2, k.couplet_en, k.meaning.en, k.meaning.ta, k.adhigaram.en, k.adhigaram.ta]
+            .forEach(text => {
+              text.toLowerCase().split(/\s+/).forEach(word => {
+                if (word.length > 2) words.add(word.replace(/[^\w]/g, ''));
+              });
+            });
+        });
+        this.wordCache = Array.from(words).sort();
+        return this.wordCache;
+      },
+
+      levenshteinDistance(a, b) {
+        const m = a.length, n = b.length;
+        const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+        for (let i = 0; i <= m; i++) dp[i][0] = i;
+        for (let j = 0; j <= n; j++) dp[0][j] = j;
+        for (let i = 1; i <= m; i++) {
+          for (let j = 1; j <= n; j++) {
+            dp[i][j] = Math.min(
+              dp[i - 1][j] + 1,
+              dp[i][j - 1] + 1,
+              dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
+            );
+          }
+        }
+        return dp[m][n];
+      },
+
+      findSuggestion(query) {
+        const words = this.getWordCache();
+        const q = query.toLowerCase().replace(/[^\w]/g, '');
+        let best = null, bestDistance = 3;
+        for (const word of words) {
+          const dist = this.levenshteinDistance(q, word);
+          if (dist < bestDistance) {
+            bestDistance = dist;
+            best = word;
+          }
+        }
+        return best;
       },
 
       init() {
@@ -189,7 +259,6 @@
         const searchBtn = document.getElementById("search-btn");
 
         if (searchInput) {
-          searchInput.addEventListener("input", (e) => this.debouncedSearch(e.target.value));
           searchInput.addEventListener("keydown", (e) => {
             if (e.key === "Enter") this.triggerSearch();
           });

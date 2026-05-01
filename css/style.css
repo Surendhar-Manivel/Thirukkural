@@ -536,22 +536,32 @@ img { max-width: 100%; display: block; }
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-right: 1px solid var(--color-border);
-  padding: var(--space-md);
+  padding: 12px 10px;
+  align-self: start;
+  position: sticky;
+  top: 0;
+}
+.browse-sidebar::-webkit-scrollbar {
+  display: none;
+}
+.browse-sidebar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .browse-main { padding: var(--space-lg); }
 
 .adhigaram-list { list-style: none; }
 .adhigaram-item {
-  padding: 8px 12px;
+  padding: 5px 8px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: background 0.1s;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 .adhigaram-item:hover { background: rgba(180,134,11,0.1); }
-.adhigaram-item.active { background: rgba(180,134,11,0.18); border-left: 3px solid var(--color-gold); }
-.adhigaram-item-ta { font-family: var(--font-tamil); font-size: 12px; color: var(--color-text-body); font-weight: 600; }
-.adhigaram-item-en { font-size: 10px; color: var(--color-text-faint); margin-top: 1px; }
+.adhigaram-item.active { background: rgba(180,134,11,0.18); border-left: 3px solid var(--color-gold); padding-left: 5px; }
+.adhigaram-item-ta { font-family: var(--font-tamil); font-size: 11px; color: var(--color-text-body); font-weight: 600; }
+.adhigaram-item-en { font-size: 9px; color: var(--color-text-faint); margin-top: 0px; }
 
 /* ---- SEARCH PAGE ---- */
 .search-result-card {

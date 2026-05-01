@@ -54384,21 +54384,29 @@ function filterByTag(tag, lang) {
   return KURALS.filter(k => k.tags.en.some(t => t.toLowerCase() === q));
 }
 
-// Search across all fields
+// Search across all fields (supports comma-separated terms for OR search)
 function searchKurals(query) {
   if (!query || query.trim() === "") return KURALS;
-  const q = query.toLowerCase().trim();
-  return KURALS.filter(k =>
-    k.kural.line1.includes(query) ||
-    k.kural.line2.includes(query) ||
-    k.meaning.ta.includes(query) ||
-    k.meaning.en.toLowerCase().includes(q) ||
-    k.couplet_en.toLowerCase().includes(q) ||
-    k.adhigaram.ta.includes(query) ||
-    k.adhigaram.en.toLowerCase().includes(q) ||
-    k.tags.ta.some(t => t.includes(query)) ||
-    k.tags.en.some(t => t.toLowerCase().includes(q))
-  );
+
+  const terms = query.split(",").map(t => t.trim()).filter(t => t.length > 0);
+  if (terms.length === 0) return KURALS;
+
+  const matchesAnyTerm = (k, term) => {
+    const q = term.toLowerCase();
+    return (
+      k.kural.line1.includes(term) ||
+      k.kural.line2.includes(term) ||
+      k.meaning.ta.includes(term) ||
+      k.meaning.en.toLowerCase().includes(q) ||
+      k.couplet_en.toLowerCase().includes(q) ||
+      k.adhigaram.ta.includes(term) ||
+      k.adhigaram.en.toLowerCase().includes(q) ||
+      k.tags.ta.some(t => t.includes(term)) ||
+      k.tags.en.some(t => t.toLowerCase().includes(q))
+    );
+  };
+
+  return KURALS.filter(k => terms.some(term => matchesAnyTerm(k, term)));
 }
 
 // Filter by pal

@@ -12,10 +12,10 @@ const PAL_CLASS = { "Virtue": "pal-aram", "Wealth": "pal-porul", "Love": "pal-in
 function renderTagsHtml(kural) {
   return [
     ...kural.tags.ta.map(t =>
-      `<span class="tag tag-ta" onclick="setTagFilter('${escapeForAttr(t)}','ta')" title="Filter by this tag">${t}</span>`
+      `<span class="tag tag-ta" data-tag="${escapeForAttr(t)}" data-lang="ta" title="Filter by this tag">${t}</span>`
     ),
     ...kural.tags.en.map(t =>
-      `<span class="tag tag-en" onclick="setTagFilter('${escapeForAttr(t)}','en')" title="Filter by this tag">${t}</span>`
+      `<span class="tag tag-en" data-tag="${escapeForAttr(t)}" data-lang="en" title="Filter by this tag">${t}</span>`
     )
   ].join("");
 }
@@ -70,13 +70,29 @@ function renderKuralCard(kural, highlight = "") {
 function renderKuralList(container, kurals, highlight = "") {
   if (!container) return;
   if (kurals.length === 0) {
-    container.innerHTML = `
+    let html = `
       <div style="text-align:center;padding:48px 24px;color:var(--color-text-faint)">
         <div style="font-size:36px;margin-bottom:12px">🔍</div>
         <div style="font-size:16px;font-weight:500;margin-bottom:6px">No kurals found</div>
         <div style="font-size:13px">Try a different search term or browse by Pal above.</div>
-      </div>
     `;
+
+    if (highlight) {
+      const suggestion = findSuggestion(highlight);
+      if (suggestion) {
+        html += `
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--color-border)">
+          <div style="font-size:12px;color:var(--color-text-muted);margin-bottom:8px">Did you mean:</div>
+          <button class="btn btn-primary btn-sm" onclick="handleSearch('${escapeForAttr(suggestion)}', 'kural-list')" style="cursor:pointer">
+            ${suggestion}
+          </button>
+        </div>
+        `;
+      }
+    }
+
+    html += `</div>`;
+    container.innerHTML = html;
     return;
   }
   container.innerHTML = kurals.map(k => renderKuralCard(k, highlight)).join("");
@@ -87,6 +103,54 @@ function renderKuralList(container, kurals, highlight = "") {
 ----------------------------------------------- */
 
 let searchTimeout = null;
+let wordCache = null;
+
+function getWordCache() {
+  if (wordCache) return wordCache;
+  const words = new Set();
+  KURALS.forEach(k => {
+    [k.kural.line1, k.kural.line2, k.couplet_en, k.meaning.en, k.meaning.ta, k.adhigaram.en, k.adhigaram.ta]
+      .forEach(text => {
+        text.toLowerCase().split(/\s+/).forEach(word => {
+          if (word.length > 2) words.add(word.replace(/[^\w]/g, ''));
+        });
+      });
+  });
+  wordCache = Array.from(words).sort();
+  return wordCache;
+}
+
+function levenshteinDistance(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
+      );
+    }
+  }
+  return dp[m][n];
+}
+
+function findSuggestion(query) {
+  const words = getWordCache();
+  const q = query.toLowerCase().replace(/[^\w]/g, '');
+  let best = null, bestDistance = 3;
+
+  for (const word of words) {
+    const dist = levenshteinDistance(q, word);
+    if (dist < bestDistance) {
+      bestDistance = dist;
+      best = word;
+    }
+  }
+  return best;
+}
 
 function handleSearch(query, containerId) {
   clearTimeout(searchTimeout);
@@ -100,7 +164,7 @@ function handleSearch(query, containerId) {
         ? `${results.length} kural${results.length !== 1 ? "s" : ""} found for "${query}"`
         : `No results for "${query}"`;
     }
-  }, 200);
+  }, 50);
 }
 
 function highlightText(text, query) {
@@ -769,6 +833,37 @@ document.addEventListener("click", e => {
 });
 
 /* -----------------------------------------------
+   SECTION 9.5: KEYBOARD SHORTCUTS
+----------------------------------------------- */
+
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === "Home") {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === "End") {
+    e.preventDefault();
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  }
+  if (e.key === "ArrowUp" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    window.scrollBy({ top: -60, behavior: "smooth" });
+  }
+  if (e.key === "ArrowDown" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    window.scrollBy({ top: 60, behavior: "smooth" });
+  }
+  if (e.key === "PageUp" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    window.scrollBy({ top: -window.innerHeight * 0.8, behavior: "smooth" });
+  }
+  if (e.key === "PageDown" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    window.scrollBy({ top: window.innerHeight * 0.8, behavior: "smooth" });
+  }
+});
+
+/* -----------------------------------------------
    SECTION 10: PAGE INIT
 ----------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
@@ -777,6 +872,16 @@ document.addEventListener("DOMContentLoaded", () => {
   initNavbar();
   initSettingsPanel();
   renderKuralOfTheDay();
+
+  // Tag click handler (event delegation)
+  document.addEventListener("click", (e) => {
+    const tag = e.target.closest(".tag[data-tag]");
+    if (tag) {
+      e.preventDefault();
+      e.stopPropagation();
+      setTagFilter(tag.dataset.tag, tag.dataset.lang);
+    }
+  });
 
   // Browse page
   const browseContainer = document.getElementById("kural-list");
